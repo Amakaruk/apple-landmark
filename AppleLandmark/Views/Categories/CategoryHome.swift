@@ -1,51 +1,79 @@
 import SwiftUI
 
+
+
 struct CategoryHome: View {
+
     @Environment(ModelData.self) var modelData
+
     @State private var showingProfile = false
+
+
+
     var body: some View {
+
         NavigationSplitView {
+
             List {
-                modelData.features[0].image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 200)
-                    .clipped()
+
+                PageView(pages: modelData.features.map { FeatureCard(landmark: $0) })
+
                     .listRowInsets(EdgeInsets())
 
-                ForEach(modelData.categories.keys.sorted(), id: \.self) { key in CategoryRow(categoryName: key, items: modelData.categories[key]!)}
-                    .listRowInsets(EdgeInsets())
+
+
+                ForEach(modelData.categories.keys.sorted(), id: \.self) { key in
+
+                    CategoryRow(categoryName: key, items: modelData.categories[key]!)
+
+                }
+
+                .listRowInsets(EdgeInsets())
+
             }
-                .listStyle(.inset)
-                .navigationTitle("Featured")
-                .toolbar {
 
-                                Button {
+            .listStyle(.inset)
 
-                                    showingProfile.toggle()
+            .navigationTitle("Featured")
 
-                                } label: {
+            .toolbar {
 
-                                    Label("User Profile", systemImage: "person.crop.circle")
+                Button {
 
-                                }
+                    showingProfile.toggle()
 
-                            }
+                } label: {
 
-                            .sheet(isPresented: $showingProfile) {
+                    Label("User Profile", systemImage: "person.crop.circle")
 
-                                ProfileHost()
+                }
 
-                                    .environment(modelData)
+            }
 
-                            }
+            .sheet(isPresented: $showingProfile) {
+
+                ProfileHost()
+
+                    .environment(modelData)
+
+            }
+
         } detail: {
-            Text("Select a landmark.")
+
+            Text("Select a Landmark")
+
         }
+
     }
+
 }
 
+
+
 #Preview {
+
     CategoryHome()
+
         .environment(ModelData())
+
 }
